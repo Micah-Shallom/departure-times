@@ -167,3 +167,11 @@ func SpewResultForDebugging(description string, v interface{}) {
 	spew.Dump(v)
 	fmt.Println("**** End Result ******")
 }
+
+func LogAndPrint(logger *Logger, data interface{}, args ...interface{}) {
+	if len(args) < 1 {
+		logger.Info(data)
+		return
+	}
+	logger.Info(data, args)
+}

@@ -16,6 +16,14 @@ var (
 type Config struct {
 	App    Application
 	Server ServerMode
+	Redis  Redis
+}
+
+type Redis struct {
+	Host     string
+	Port     string
+	Password string
+	DB       string
 }
 
 type ServerMode struct {
@@ -42,6 +50,12 @@ func LoadEnv(logger *utility.Logger) *Config {
 			Server: ServerMode{
 				Port: getEnv("PORT", "8080"),
 				Mode: getEnv("GIN_MODE", "debug"),
+			},
+			Redis: Redis{
+				Host:     getEnv("REDIS_HOST", "localhost"),
+				Port:     getEnv("REDIS_PORT", "6379"),
+				Password: getEnv("REDIS_PASSWORD", ""),
+				DB:       "0",
 			},
 		}
 	})

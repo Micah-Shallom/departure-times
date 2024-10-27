@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/Micah-Shallom/departure-times/internal/config"
+	"github.com/Micah-Shallom/departure-times/pkg/repository/storage/redis"
 	"github.com/Micah-Shallom/departure-times/pkg/router"
 	"github.com/Micah-Shallom/departure-times/utility"
 	"github.com/gin-gonic/gin"
@@ -31,6 +32,10 @@ func main() {
 	//loading configurations
 	config.LoadEnv(logger)
 
+	//load services
+	redis.ConnectToRedis(logger, cfg.Redis)
+
+	//instantiate application
 	app := NewRouter(cfg)
 
 	r := router.Setup(app.engine, app.config ,logger)
