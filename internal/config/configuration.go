@@ -69,7 +69,6 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
-// GetConfig returns the current config instance
 func GetConfig(logger *utility.Logger) *Config {
 	if config == nil {
 		return LoadEnv(logger)

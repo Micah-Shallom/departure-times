@@ -34,12 +34,11 @@ func main() {
 
 	//load services
 	redis.ConnectToRedis(logger, cfg.Redis)
-
-	//instantiate application
+	go redis.LoadCache(logger)
+	
 	app := NewRouter(cfg)
 
 	r := router.Setup(app.engine, app.config ,logger)
-	fmt.Println(cfg.Server.Port)
 
 	log.Fatal(r.Run(fmt.Sprintf(":%s", cfg.Server.Port)))
 }
