@@ -18,6 +18,7 @@ type Router struct {
 
 func NewRouter(cfg *config.Config) *Router {
 	gin.SetMode(cfg.Server.Mode)
+
 	return &Router{
 		config: cfg,
 		engine: gin.New(),
@@ -33,8 +34,8 @@ func main() {
 	config.LoadEnv(logger)
 
 	//load services
-	redis.ConnectToRedis(logger, cfg.Redis)
-	go redis.LoadCache(logger)
+	redisClient := redis.ConnectToRedis(logger, cfg.Redis)
+	go redis.LoadCache(logger, redisClient)
 	
 	app := NewRouter(cfg)
 

@@ -16,21 +16,28 @@ type Controller struct {
 	ExtReq requests.ExternalRequest
 }
 
-func (base *Controller) GetStops(c *gin.Context) {
+func (base *Controller) GetRouteConfigList(c *gin.Context) {
 	var (
 		agency_tag = c.Query("agency_tag")
 		route_tag  = c.Query("route_tag")
 	)
 
-	response, err := service.GetRouteConfigurations(base.Logger, base.ExtReq, agency_tag, route_tag)
-	if err != nil {
-		base.Logger.Error("unable to get stops", err)
-		rd := utility.BuildErrorResponse(http.StatusBadRequest, "error", "unable to get stops", err.Error(), nil)
+	if agency_tag == "" || route_tag == "" {
+		base.Logger.Error("agency tag or route tag is empty. Provide an agency tag and route tag")
+		rd := utility.BuildErrorResponse(http.StatusBadRequest, "error", "agency tag or route tag is empty, provide an agency tag and route tag.", nil, nil)
 		c.JSON(http.StatusBadRequest, rd)
 		return
 	}
 
-	base.Logger.Info("stops fetched successfully")
-	rd := utility.BuildSuccessResponse(http.StatusOK, "stops fetched successfully", response)
+	response, err := service.GetRouteConfigurations(base.Logger, base.ExtReq, agency_tag, route_tag)
+	if err != nil {
+		base.Logger.Error("unable to get route configurations", err)
+		rd := utility.BuildErrorResponse(http.StatusBadRequest, "error", "unable to get route configurations", err.Error(), nil)
+		c.JSON(http.StatusBadRequest, rd)
+		return
+	}
+
+	base.Logger.Info("route configurations fetched successfully")
+	rd := utility.BuildSuccessResponse(http.StatusOK, "route configurations fetched successfully", response)
 	c.JSON(http.StatusOK, rd)
 }

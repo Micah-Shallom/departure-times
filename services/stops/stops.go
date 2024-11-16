@@ -12,6 +12,7 @@ func GetRouteConfigurations(logger *utility.Logger, extReq requests.ExternalRequ
 	var (
 		routeConfigResponse external_models.GetRoutesConfigResponse
 	)
+	
 	data := map[string]string{
 		"agency_tag": agency_tag,
 		"route_tag":  route_tag,
@@ -24,7 +25,6 @@ func GetRouteConfigurations(logger *utility.Logger, extReq requests.ExternalRequ
 	}
 
 	routeConfigurations, ok := response.(external_models.GetRoutesConfigResponse)
-
 	if !ok {
 		logger.Error("Error casting response to GetRoutesConfigResponse")
 		return routeConfigResponse, fmt.Errorf("error casting response to GetRoutesConfigResponse")

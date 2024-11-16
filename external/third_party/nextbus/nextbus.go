@@ -24,6 +24,8 @@ func (r *RequestObj) GetAgencyList() (external_models.GetAgenciesResponse, error
 		return outBoundResponse, err
 	}
 
+	fmt.Println(outBoundResponse)
+
 	return outBoundResponse, nil
 }
 

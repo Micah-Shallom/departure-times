@@ -1,67 +1,83 @@
 package external_models
 
 type GetAgenciesResponse struct {
-	Agencies []Agency `xml:"agency"`
+    Agencies []Agency `xml:"agency"`
 }
 
 type Agency struct {
-	Tag         string `xml:"tag,attr"`
-	Title       string `xml:"title,attr"`
-	ShortTitle  string `xml:"shortTitle,attr"`
-	RegionTitle string `xml:"regionTitle,attr"`
+    Tag         string `xml:"tag,attr"`
+    Title       string `xml:"title,attr"`
+    ShortTitle  string `xml:"shortTitle,attr"`
+    RegionTitle string `xml:"regionTitle,attr"`
 }
 
 type GetRoutesResponse struct {
-	Routes []struct {
-		Tag   string `xml:"tag,attr"`
-		Title string `xml:"title,attr"`
-	} `xml:"route"`
+    Routes []Route `xml:"route"`
 }
 
 type GetRoutesConfigResponse struct {
-	Config RouteWrapper `xml:"route"`
-}
-
-type RouteWrapper struct {
-	Route      Route       `xml:",inline"`
-	Stops      []Stop      `xml:"stop"`
-	Directions []Direction `xml:"direction"`
-	Paths      []Path      `xml:"path"`
+    Route Route `xml:"route"`
 }
 
 type Route struct {
-	Tag           string  `xml:"tag,attr"`
-	Title         string  `xml:"title,attr"`
-	Color         string  `xml:"color,attr"`
-	OppositeColor string  `xml:"oppositeColor,attr"`
-	LatMin        float64 `xml:"latMin,attr"`
-	LatMax        float64 `xml:"latMax,attr"`
-	LonMin        float64 `xml:"lonMin,attr"`
-	LonMax        float64 `xml:"lonMax,attr"`
-}
-
-type Stop struct {
-	Tag        string  `xml:"tag,attr"`
-	Title      string  `xml:"title,attr"`
-	ShortTitle string  `xml:"shortTitle,attr,omitempty"`
-	Lat        float64 `xml:"lat,attr"`
-	Lon        float64 `xml:"lon,attr"`
-	StopID     string  `xml:"stopId,attr,omitempty"`
-}
-
-type Direction struct {
-	Tag      string   `xml:"tag,attr"`
-	Title    string   `xml:"title,attr"`
-	Name     string   `xml:"name,attr,omitempty"`
-	UseForUI bool     `xml:"useForUI,attr"`
-	StopTags []string `xml:"stop>tag"`
+    Path          []Path      `xml:"path"`
+    LonMax        string      `xml:"lonMax,attr"`
+    Color         string      `xml:"color,attr"`
+    OppositeColor string      `xml:"oppositeColor,attr"`
+    Stop          []Stop      `xml:"stop"`
+    Tag           string      `xml:"tag,attr"`
+    LatMin        string      `xml:"latMin,attr"`
+    Title         string      `xml:"title,attr"`
+    LatMax        string      `xml:"latMax,attr"`
+    LonMin        string      `xml:"lonMin,attr"`
+    Direction     []Direction `xml:"direction"`
 }
 
 type Path struct {
-	Points []Point `xml:"point"`
+    Point []Point `xml:"point"`
 }
 
 type Point struct {
-	Lat float64 `xml:"lat,attr"`
-	Lon float64 `xml:"lon,attr"`
+    Lon string `xml:"lon,attr"`
+    Lat string `xml:"lat,attr"`
 }
+
+type Stop struct {
+    StopID     string `xml:"stopId,attr,omitempty"`
+    Lon        string `xml:"lon,attr"`
+    Tag        string `xml:"tag,attr"`
+    ShortTitle string `xml:"shortTitle,attr,omitempty"`
+    Title      string `xml:"title,attr"`
+    Lat        string `xml:"lat,attr"`
+}
+
+type Direction struct {
+    Stop     []DirectionStop `xml:"stop"`
+    Name     string          `xml:"name,attr"`
+    UseForUI string          `xml:"useForUI,attr"`
+    Tag      string          `xml:"tag,attr"`
+    Title    string          `xml:"title,attr"`
+}
+
+type DirectionStop struct {
+    Tag string `xml:"tag,attr"`
+}
+
+// custom unmarshaller for directions struct to handle slice and object responses
+// func (d *DirectionOrDirections) UnmarshalJSON(data []byte) error {
+// 	var (
+// 		single   Direction
+// 		multiple []Direction
+// 	)
+
+// 	if err := json.Unmarshal(data, &single); err == nil {
+// 		d.Direction = []Direction{single}
+// 		return nil
+// 	}
+
+// 	if err := json.Unmarshal(data, &multiple); err == nil {
+// 		d.Direction = multiple
+// 		return nil
+// 	}
+// 	return fmt.Errorf("failed to custom unmarshal direction")
+// }

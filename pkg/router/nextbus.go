@@ -17,8 +17,8 @@ func NextBus(r *gin.Engine, ApiVersion string, logger *utility.Logger, cfg *conf
 	agency := agency.Controller{Logger: logger, ExtReq: extReq, Config: cfg}
 	stops := stops.Controller{Logger: logger, ExtReq: extReq, Config: cfg}
 
-	nextbusURL.GET("/getAgency", agency.GetAgencies)
-	nextbusURL.GET("/getRouteList", agency.GetRouteList)
+	nextbusURL.GET("/agency", agency.GetAgencies)
+	nextbusURL.GET("/routelist", agency.GetRouteList)
 
-	nextbusURL.GET("/stops", stops.GetStops)
+	nextbusURL.GET("/routeconfig", stops.GetRouteConfigList)
 }
