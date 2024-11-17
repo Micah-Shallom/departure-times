@@ -105,7 +105,7 @@ func LoadCache(logger *utility.Logger, redisClient *redis.Client) {
 	log.Printf("\n📊 Total tasks queued: %d\n", atomic.LoadUint64(&totalTasks))
 	close(routeTasks)
 
-	// Start progress monitoring goroutine
+	// monitoring goroutine
 	go func() {
 		for {
 			time.Sleep(5 * time.Second)
@@ -148,8 +148,6 @@ func worker(
 ) {
 	for task := range tasks {
 		startTime := time.Now()
-		// log.Printf("👨‍💼 Worker %d starting task %d (%s-%s)\n",
-		//     workerID, task.taskID, task.agencyTag, task.routeTag)
 
 		rateLimiter <- struct{}{}
 		time.Sleep(requestDelay)
@@ -177,8 +175,6 @@ func worker(
 		}
 
 		cacheMutex.Lock()
-		// cache.RouteConfigCache[task.routeTag] = routeConfigs
-		// cache.StopListCache[task.agencyTag][task.routeTag] = routeConfigs.Config.Stops
 		storeStopsInRedis(redisClient, task.agencyTag, task.routeTag, routeConfigs.Route.Stop)
 		cacheMutex.Unlock()
 

@@ -10,7 +10,7 @@ import (
 
 func storeStopsInRedis(redisClient *redis.Client, agencyTag, routeTag string, stops []external_models.Stop) error {
 	var parseFloat func(value string) float64
-	// store stops in redis
+	
 	// geoKey := fmt.Sprintf("geo%s:%s", agencyTag, routeTag)
 	geoKey := "geo:all_stops"
 
@@ -47,7 +47,6 @@ func storeStopsInRedis(redisClient *redis.Client, agencyTag, routeTag string, st
 		if err != nil {
 			return fmt.Errorf("error storing stops in redis hashset: %s", err)
 		}
-
 	}
 	
 	return nil

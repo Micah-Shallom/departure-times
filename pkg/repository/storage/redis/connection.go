@@ -19,7 +19,6 @@ var (
 func ConnectToRedis(logger *utility.Logger, cfg config.Redis) *redis.Client {
 	utility.LogAndPrint(logger, "connecting to redis server")
 	connectedServer := connectToDb(cfg.Host, cfg.Port, cfg.DB, logger)
-	fmt.Println("-------------------------------------", connectedServer)
 
 	utility.LogAndPrint(logger, "connected to redis server")
 
