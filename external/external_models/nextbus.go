@@ -11,6 +11,15 @@ type Agency struct {
 	RegionTitle string `xml:"regionTitle,attr"`
 }
 
+type RouteListResponse struct {
+	Routes []RouteList `xml:"route"`
+}
+
+type RouteList struct {
+	Tag   string `xml:"tag,attr"`
+	Title string `xml:"title,attr"`
+}
+
 type GetRoutesResponse struct {
 	Routes []Route `xml:"route"`
 }
@@ -64,18 +73,21 @@ type DirectionStop struct {
 }
 
 type StopInfo struct {
-	Tag        string `json:"tag"`
-	Title      string `json:"title"`
-	ShortTitle string `json:"shortTitle"`
-	Lat        string `json:"lat"`
-	Lon        string `json:"lon"`
-	StopID     string `json:"stopId"`
-	RouteTag   string `json:"routeTag"`
-	AgencyTag  string `json:"agencyTag"`
+	Tag        string  `json:"tag"`
+	Title      string  `json:"title"`
+	ShortTitle string  `json:"shortTitle"`
+	Lat        string  `json:"lat"`
+	Lon        string  `json:"lon"`
+	StopID     string  `json:"stopId"`
+	RouteTag   string  `json:"routeTag"`
+	AgencyTag  string  `json:"agencyTag"`
+	Distance   float64 `json:"distance"`
 }
 
 type GetStopsRequest struct {
-	Longitude string `json:"longitude" validate:"required"`
-	Latitude  string `json:"latitude" validate:"required"`
-	Radius    int    `json:"radius" validate:"required"`
+	AgencyTag *string `json:"agencyTag"`
+	RouteTag  *string `json:"routeTag"`
+	Longitude string  `json:"longitude" validate:"required"`
+	Latitude  string  `json:"latitude" validate:"required"`
+	Radius    int     `json:"radius" validate:"required"`
 }

@@ -47,9 +47,10 @@ func GetStops(logger *utility.Logger, extReq requests.ExternalRequest, redisClie
 	)
 
 	stopResults, err := redisClient.GeoSearch(ctx, geoKey, &redis.GeoSearchQuery{
-		Radius:    utility.ParseFloat(rad),
-		Longitude: utility.ParseFloat(long),
-		Latitude:  utility.ParseFloat(lat),
+		Radius:     utility.ParseFloat(rad),
+		RadiusUnit: "m",
+		Longitude:  utility.ParseFloat(long),
+		Latitude:   utility.ParseFloat(lat),
 	}).Result()
 	if err != nil {
 		logger.Error("Error fetching geo search results: %s", err)
@@ -62,26 +63,31 @@ func GetStops(logger *utility.Logger, extReq requests.ExternalRequest, redisClie
 			logger.Error("Error fetching stop data: %s", err)
 			return stopResultsResponse, err
 		}
+		distance := utility.Haversine(utility.ParseFloat(long), utility.ParseFloat(lat), utility.ParseFloat(stopData["lon"]), utility.ParseFloat(stopData["lat"]))
 
 		switch {
 		case reqdata["AgencyTag"] == "" && reqdata["RouteTag"] == "":
 			// Case 1: Both AgencyTag and RouteTag are empty (return all stops)
-			utility.AppendStop(stopData, &stopResultsResponse)
-	
+			utility.AppendStop(stopData, &stopResultsResponse, distance)
+
 		case reqdata["AgencyTag"] == "" && reqdata["RouteTag"] != "" && reqdata["RouteTag"] == stopData["routeTag"]:
 			// Case 2: AgencyTag is empty, but RouteTag is specified and matches
-			utility.AppendStop(stopData, &stopResultsResponse)
-	
+			utility.AppendStop(stopData, &stopResultsResponse, distance)
+
 		case reqdata["RouteTag"] == "" && reqdata["AgencyTag"] != "" && reqdata["AgencyTag"] == stopData["agencyTag"]:
 			// Case 3: RouteTag is empty, but AgencyTag is specified and matches
-			utility.AppendStop(stopData, &stopResultsResponse)
-	
-		case reqdata["AgencyTag"] == stopData["agencyTag"] || reqdata["RouteTag"] == stopData["routeTag"]:
+			utility.AppendStop(stopData, &stopResultsResponse, distance)
+
+		case reqdata["AgencyTag"] == stopData["agencyTag"] && reqdata["RouteTag"] == stopData["routeTag"]:
 			// Case 4: Both AgencyTag and RouteTag are specified, and at least one matches
-			utility.AppendStop(stopData, &stopResultsResponse)
+			utility.AppendStop(stopData, &stopResultsResponse, distance)
 		}
-		
 
 	}
+
+	//Sort the stops by distance
+	//displaying closest stops first
+	utility.SortStopDistance(stopResultsResponse)
+
 	return stopResultsResponse, nil
 }

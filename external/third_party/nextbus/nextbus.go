@@ -27,10 +27,10 @@ func (r *RequestObj) GetAgencyList() (external_models.GetAgenciesResponse, error
 	return outBoundResponse, nil
 }
 
-func (r *RequestObj) GetRouteList(agency string) (external_models.GetRoutesResponse, error) {
+func (r *RequestObj) GetRouteList(agency string) (external_models.RouteListResponse, error) {
 	var (
 		logger           = r.Logger
-		outBoundResponse = external_models.GetRoutesResponse{}
+		outBoundResponse = external_models.RouteListResponse{}
 	)
 
 	headers := map[string]string{

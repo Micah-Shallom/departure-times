@@ -23,8 +23,8 @@ type Controller struct {
 
 func (base *Controller) GetRouteConfigList(c *gin.Context) {
 	var (
-		agency_tag = c.Query("agency_tag")
-		route_tag  = c.Query("route_tag")
+		agency_tag = c.DefaultQuery("agency_tag", "")
+		route_tag  = c.DefaultQuery("route_tag", "")
 	)
 
 	if agency_tag == "" || route_tag == "" {
@@ -49,11 +49,13 @@ func (base *Controller) GetRouteConfigList(c *gin.Context) {
 
 func (base *Controller) GetStops(c *gin.Context) {
 	var (
-		agencyTag                 = c.Query("agency")
-		routeTag                  = c.Query("route")
+		agency_tag                = c.DefaultQuery("agency", "")
+		route_tag                 = c.DefaultQuery("route", "")
 		redisClient *redis.Client = storage.DB.Redis
 		req                       = external_models.GetStopsRequest{}
 	)
+	req.AgencyTag = &agency_tag
+	req.RouteTag = &route_tag
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		base.Logger.Error("unable to bind request", err)
@@ -74,8 +76,8 @@ func (base *Controller) GetStops(c *gin.Context) {
 		"Longitude": req.Longitude,
 		"Latitude":  req.Latitude,
 		"Radius":    req.Radius,
-		"Agency":    agencyTag,
-		"Route":     routeTag,
+		"AgencyTag": agency_tag,
+		"RouteTag":  route_tag,
 	}
 
 	response, err := service.GetStops(base.Logger, base.ExtReq, redisClient, data)

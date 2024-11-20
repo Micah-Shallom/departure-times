@@ -22,7 +22,7 @@ const (
 )
 
 var (
-	numConcurrentWorkers = int(math.Max(float64(runtime.NumCPU()*10), 2))
+	numConcurrentWorkers = int(math.Max(float64(runtime.NumCPU()*10), 10))
 	cacheMutex           = &sync.Mutex{}
 	cache                = external_models.Cache{
 		RouteListCache:   make(map[string]external_models.GetRoutesResponse),
@@ -73,7 +73,6 @@ func LoadCache(logger *utility.Logger, redisClient *redis.Client) {
 	}
 
 	taskID := 0
-	// Process each agency
 	for _, agency := range agencyList.Agencies {
 		log.Printf("\n🏢 Processing agency: %s\n", agency.Tag)
 
@@ -85,11 +84,6 @@ func LoadCache(logger *utility.Logger, redisClient *redis.Client) {
 
 		log.Printf("📍 Found %d routes for agency %s\n", len(routeList.Routes), agency.Tag)
 		atomic.AddUint64(&totalTasks, uint64(len(routeList.Routes)))
-
-		// cacheMutex.Lock()
-		// cache.RouteListCache[agency.Tag] = routeList
-		// cache.StopListCache[agency.Tag] = make(map[string][]external_models.Stop)
-		// cacheMutex.Unlock()
 
 		for _, route := range routeList.Routes {
 			taskID++

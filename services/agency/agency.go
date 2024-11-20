@@ -27,8 +27,8 @@ func GetAgencyList(logger *utility.Logger, extReq requests.ExternalRequest) (ext
 	return agencyListResponse, nil
 }
 
-func GetRouteList(logger *utility.Logger, extReq requests.ExternalRequest, agency_tag string) (external_models.GetRoutesResponse, error) {
-	var routeResponse external_models.GetRoutesResponse
+func GetRouteList(logger *utility.Logger, extReq requests.ExternalRequest, agency_tag string) (external_models.RouteListResponse, error) {
+	var routeResponse external_models.RouteListResponse
 
 	response, err := extReq.SendExternalRequest(requests.GetRouteList, agency_tag)
 	if err != nil {
@@ -36,7 +36,7 @@ func GetRouteList(logger *utility.Logger, extReq requests.ExternalRequest, agenc
 		return routeResponse, err
 	}
 
-	routeListResponse, ok := response.(external_models.GetRoutesResponse)
+	routeListResponse, ok := response.(external_models.RouteListResponse)
 	if !ok {
 		logger.Error("Error casting response to GetAgenciesResponse")
 		return routeResponse, fmt.Errorf("error casting response to GetAgenciesResponse")
