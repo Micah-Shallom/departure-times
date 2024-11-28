@@ -8,9 +8,10 @@ import (
 	"github.com/Micah-Shallom/departure-times/utility"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
-func Setup(r *gin.Engine, cfg *config.Config, logger *utility.Logger) *gin.Engine {
+func Setup(r *gin.Engine, cfg *config.Config, logger *utility.Logger, validator *validator.Validate) *gin.Engine {
 	ApiVersion := "/api/v1"
 
 	//middlewares
@@ -24,7 +25,7 @@ func Setup(r *gin.Engine, cfg *config.Config, logger *utility.Logger) *gin.Engin
 
 	//routers
 	Health(r, ApiVersion, logger, cfg)
-	NextBus(r, ApiVersion, logger, cfg)
+	NextBus(r, ApiVersion, logger, validator ,cfg)
 
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{

@@ -12,45 +12,70 @@ type Agency struct {
 }
 
 type GetRoutesResponse struct {
-	Routes []struct {
-		Tag   string `xml:"tag,attr"`
-		Title string `xml:"title,attr"`
-	} `xml:"route"`
+	Routes []Route `xml:"route"`
 }
 
 type GetRoutesConfigResponse struct {
-	Routes []struct {
-		Tag           string  `xml:"tag,attr"`
-		Title         string  `xml:"title,attr"`
-		Color         string  `xml:"color,attr"`
-		OppositeColor string  `xml:"oppositeColor,attr"`
-		LatMin        float64 `xml:"latMin,attr"`
-		LatMax        float64 `xml:"latMax,attr"`
-		LonMin        float64 `xml:"lonMin,attr"`
-		LonMax        float64 `xml:"lonMax,attr"`
+	Route Route `xml:"route"`
+}
 
-		Stops []struct {
-			Tag        string  `xml:"tag,attr"`
-			Title      string  `xml:"title,attr"`
-			ShortTitle string  `xml:"shortTitle,attr,omitempty"`
-			Lat        float64 `xml:"lat,attr"`
-			Lon        float64 `xml:"lon,attr"`
-			StopID     string  `xml:"stopId,attr,omitempty"`
-		} `xml:"stop"`
+type Route struct {
+	Path          []Path      `xml:"path"`
+	LonMax        string      `xml:"lonMax,attr"`
+	Color         string      `xml:"color,attr"`
+	OppositeColor string      `xml:"oppositeColor,attr"`
+	Stop          []Stop      `xml:"stop"`
+	Tag           string      `xml:"tag,attr"`
+	LatMin        string      `xml:"latMin,attr"`
+	Title         string      `xml:"title,attr"`
+	LatMax        string      `xml:"latMax,attr"`
+	LonMin        string      `xml:"lonMin,attr"`
+	Direction     []Direction `xml:"direction"`
+}
 
-		Directions []struct {
-			Tag      string   `xml:"tag,attr"`
-			Title    string   `xml:"title,attr"`
-			Name     string   `xml:"name,attr,omitempty"`
-			UseForUI bool     `xml:"useForUI,attr"`
-			StopTags []string `xml:"stop"`
-		} `xml:"direction"`
+type Path struct {
+	Point []Point `xml:"point"`
+}
 
-		Paths []struct {
-			Points []struct {
-				Lat float64 `xml:"lat,attr"`
-				Lon float64 `xml:"lon,attr"`
-			} `xml:"point"`
-		} `xml:"path"`
-	} `xml:"route"`
+type Point struct {
+	Lon string `xml:"lon,attr"`
+	Lat string `xml:"lat,attr"`
+}
+
+type Stop struct {
+	StopID     string `xml:"stopId,attr,omitempty"`
+	Lon        string `xml:"lon,attr"`
+	Tag        string `xml:"tag,attr"`
+	ShortTitle string `xml:"shortTitle,attr,omitempty"`
+	Title      string `xml:"title,attr"`
+	Lat        string `xml:"lat,attr"`
+}
+
+type Direction struct {
+	Stop     []DirectionStop `xml:"stop"`
+	Name     string          `xml:"name,attr"`
+	UseForUI string          `xml:"useForUI,attr"`
+	Tag      string          `xml:"tag,attr"`
+	Title    string          `xml:"title,attr"`
+}
+
+type DirectionStop struct {
+	Tag string `xml:"tag,attr"`
+}
+
+type StopInfo struct {
+	Tag        string `json:"tag"`
+	Title      string `json:"title"`
+	ShortTitle string `json:"shortTitle"`
+	Lat        string `json:"lat"`
+	Lon        string `json:"lon"`
+	StopID     string `json:"stopId"`
+	RouteTag   string `json:"routeTag"`
+	AgencyTag  string `json:"agencyTag"`
+}
+
+type GetStopsRequest struct {
+	Longitude string `json:"longitude" validate:"required"`
+	Latitude  string `json:"latitude" validate:"required"`
+	Radius    int    `json:"radius" validate:"required"`
 }

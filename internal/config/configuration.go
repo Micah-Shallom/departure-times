@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"sync"
 
@@ -39,6 +40,7 @@ func LoadEnv(logger *utility.Logger) *Config {
 	once.Do(func() {
 		// Load .env file
 		if err := godotenv.Load(); err != nil {
+			fmt.Println("Error loading .env file")
 			logger.Error("Warning: .env file not found: %v", err)
 			return
 		}
@@ -69,7 +71,6 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
-// GetConfig returns the current config instance
 func GetConfig(logger *utility.Logger) *Config {
 	if config == nil {
 		return LoadEnv(logger)

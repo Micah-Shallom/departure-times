@@ -17,6 +17,7 @@ var (
 	XMLDecodeMethod  string = "xml"
 	GetAgencyList    string = "get_agency_list"
 	GetRouteList     string = "get_route_list"
+	GetRouteConfig   string = "get_route_config"
 )
 
 func (er *ExternalRequest) SendExternalRequest(name string, data interface{}) (interface{}, error) {
@@ -37,7 +38,7 @@ func (er *ExternalRequest) SendExternalRequest(name string, data interface{}) (i
 		}
 		return obj.GetAgencyList()
 	case GetRouteList:
-		data := data.(string)
+		reqData := data.(string)
 
 		obj := nextbus.RequestObj{
 			Name:         name,
@@ -48,7 +49,20 @@ func (er *ExternalRequest) SendExternalRequest(name string, data interface{}) (i
 			DecodeMethod: XMLDecodeMethod,
 			Logger:       er.Logger,
 		}
-		return obj.GetRouteList(data)
+		return obj.GetRouteList(reqData)
+	case GetRouteConfig:
+		reqData := data.(map[string]string)
+
+		obj := nextbus.RequestObj{
+			Name:         name,
+			Path:         config.App.NextBusURL,
+			Method:       "GET",
+			SuccessCode:  200,
+			RequestData:  data,
+			DecodeMethod: XMLDecodeMethod,
+			Logger:       er.Logger,
+		}
+		return obj.GetRouteConfig(reqData)
 	default:
 		return nil, fmt.Errorf("request name %s not found", name)
 	}
